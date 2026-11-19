@@ -27,7 +27,7 @@ AMyProject2BlockGrid::AMyProject2BlockGrid()
 	ScoreText->SetupAttachment(DummyRoot);
 
 	Size = 3;
-	BlockSpacing = 300.f; // Aumentamos el espacio entre dados a 400
+	BlockSpacing = 300.f; 
 	BlockSize = 1.8f;
 
 	Score = 0;
@@ -67,7 +67,7 @@ void AMyProject2BlockGrid::BeginPlay()
 		}
 	}
 
-	// AÑADIDO: Creación de la moneda a la izquierda de la grilla (Paso 7.2) ---
+	
 	ACoin* NuevaMoneda = GetWorld()->SpawnActor<ACoin>(
 		GetActorLocation() + FVector(-300.f, 0.f, 0.f), FRotator::ZeroRotator);
 
