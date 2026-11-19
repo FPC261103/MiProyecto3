@@ -48,9 +48,13 @@ public:
 
 	UPROPERTY(Category = Grid, EditAnywhere, BlueprintReadOnly)
 		float BlockSize;
+	UPROPERTY(Category = Grid, EditAnywhere, BlueprintReadOnly)
+		int32 Favoritos;
 
 	UPROPERTY(Category = Grid, EditAnywhere, BlueprintReadOnly)
 		TArray<ADado*> ListaDados;
+	UPROPERTY(Category = Grid, VisibleAnywhere, BlueprintReadOnly)
+		TArray<ADado*> ListaFavoritos;
 
 protected:
 	// Begin AActor interface

@@ -20,7 +20,6 @@ ADado::ADado()
 	BlockMesh->SetStaticMesh(PlaneMesh.Get());
 	BlockMesh->SetupAttachment(DummyRoot);
 
-	// Sin física para que no se desordenen
 	BlockMesh->SetSimulatePhysics(false);
 	BlockMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	BlockMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -42,41 +41,60 @@ void ADado::BeginPlay()
 	}
 
 	ladoCara();
-
 	StartLocation = GetActorLocation();
 }
 
 void ADado::BlockClicked(UPrimitiveComponent* ClickedComp, FKey ButtonClicked)
 {
-	// --- NUEVO LOG: Avisamos qué dado se tocó ---
-	
-	UE_LOG(LogTemp, Warning, TEXT("El dado tocado tiene el numero: %d"), Value);
-
 	if (OwningGrid != nullptr)
 	{
-		// --- NUEVO LOG: Cuántos dados hay en total ---
-		UE_LOG(LogTemp, Warning, TEXT("Revisando la lista del Grid que tiene %d dados..."), OwningGrid->ListaDados.Num());
+		// 1. Establecemos el Número Favorito (solo la primera vez)
+		if (OwningGrid->Favoritos == 0)
+		{
+			OwningGrid->Favoritos = this->Value;
+			UE_LOG(LogTemp, Warning, TEXT("¡Número Favorito establecido en: %d!"), OwningGrid->Favoritos);
+		}
 
-		int32 DadosEncontrados = 0; // Variable para contar cuántos coinciden
+		int32 ValorBuscado = this->Value;
+		int32 DadosEncontrados = 0;
 
+		// 2. Recorremos la lista para hacer saltar a TODOS los del mismo número
 		for (ADado* dadoEnLista : OwningGrid->ListaDados)
 		{
-			if (dadoEnLista != nullptr && dadoEnLista->Value == this->Value)
+			if (dadoEnLista != nullptr && dadoEnLista->Value == ValorBuscado)
 			{
+				// Hacemos que salte
 				dadoEnLista->ApplyVerticalImpulse();
-				DadosEncontrados++; // Sumamos 1 a los encontrados
+				DadosEncontrados++;
+
+				// 3. Solo si el número es el Favorito, lo registramos y sumamos
+				if (ValorBuscado == OwningGrid->Favoritos)
+				{
+					if (!OwningGrid->ListaFavoritos.Contains(dadoEnLista))
+					{
+						OwningGrid->ListaFavoritos.Add(dadoEnLista);
+					}
+				}
 			}
 		}
 
-		// --- NUEVO LOG: Resultado final ---
-		UE_LOG(LogTemp, Warning, TEXT("Se encontraron y saltaron %d dados con el número %d"), DadosEncontrados, Value);
-		UE_LOG(LogTemp, Warning, TEXT("..."));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("¡ERROR! El dado no tiene un Grid (OwningGrid) asignado."));
+		// 4. Sumar puntos solo si es el Favorito
+		if (ValorBuscado == OwningGrid->Favoritos && DadosEncontrados > 0)
+		{
+			int32 PuntosASumar = ValorBuscado * DadosEncontrados;
+			OwningGrid->AddScore(PuntosASumar);
+
+			UE_LOG(LogTemp, Warning, TEXT("¡Acertaste el favorito %d! Encontraste %d dados. Puntos: %d. Total: %d"),
+				ValorBuscado, DadosEncontrados, PuntosASumar, OwningGrid->Score);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Tocaste un %d. Saltaron %d dados, pero no sumas puntos porque el Favorito es %d."),
+				ValorBuscado, DadosEncontrados, OwningGrid->Favoritos);
+		}
 	}
 }
+
 void ADado::ApplyVerticalImpulse()
 {
 	if (bIsJumping) return;
@@ -95,13 +113,10 @@ void ADado::Tick(float DeltaTime)
 
 		SetActorLocation(StartLocation + FVector(0.f, 0.f, AlturaSalto));
 
-		// --- GIRO FORZADO EN EL EJE Y (ROLL) ---
 		FRotator RotacionActual = BlockMesh->GetRelativeRotation();
-
-		RotacionActual.Pitch = 0.f; // X a cero
-		RotacionActual.Yaw = 0.f;   // Z a cero
-		RotacionActual.Roll += DeltaTime * 720.f; // Giramos en Y (Roll) - 2 vueltas
-
+		RotacionActual.Pitch = 0.f;
+		RotacionActual.Yaw = 0.f;
+		RotacionActual.Roll += DeltaTime * 720.f;
 		BlockMesh->SetRelativeRotation(RotacionActual);
 
 		if (JumpTimer >= 1.0f)
@@ -110,6 +125,8 @@ void ADado::Tick(float DeltaTime)
 			bIsJumping = false;
 
 			SetActorLocation(StartLocation);
+
+			Value = FMath::RandRange(1, 6);
 			ladoCara();
 		}
 	}

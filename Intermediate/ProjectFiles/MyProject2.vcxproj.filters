@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\MyProject2.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{ABB3A347-C193-4613-9F4F-F26B1E1AC9E3}</UniqueIdentifier>
+      <UniqueIdentifier>{6742BBA6-BF77-4271-8091-5F9C5248B4BF}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\MyProject2.Target.cs">
       <Filter>Source</Filter>
@@ -11,8 +11,11 @@
     <None Include="..\..\Source\MyProject2Editor.Target.cs">
       <Filter>Source</Filter>
     </None>
+    <None Include="..\..\.gitattributes" />
+    <None Include="..\..\.gitignore" />
+    <None Include="..\..\.gitignore.txt" />
     <Filter Include="Config">
-      <UniqueIdentifier>{6C6C7FFD-2FBB-4479-A7DC-F1C98322837E}</UniqueIdentifier>
+      <UniqueIdentifier>{FB373EDD-2255-4DD2-9DC3-2135E19DAEFB}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -30,8 +33,14 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\MyProject2">
-      <UniqueIdentifier>{992DCC95-612C-4678-8BB3-6EA1AC2D5AB7}</UniqueIdentifier>
+      <UniqueIdentifier>{1F2D4744-E822-4B5D-BCBE-FDCA4F91F4E0}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\MyProject2\Coin.cpp">
+      <Filter>Source\MyProject2</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\MyProject2\Coin.h">
+      <Filter>Source\MyProject2</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\MyProject2\Dado.cpp">
       <Filter>Source\MyProject2</Filter>
     </ClCompile>

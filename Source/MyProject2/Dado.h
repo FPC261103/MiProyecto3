@@ -22,7 +22,6 @@ public:
 	UPROPERTY(Category = Block, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		class UStaticMeshComponent* BlockMesh;
 
-	// Sets default values for this actor's properties
 	ADado();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dado")
@@ -33,28 +32,24 @@ public:
 
 	// Puntero para saber quién es su Grid y avisarle para sumar puntos
 	UPROPERTY()
-		class AMyProject2BlockGrid* OwningGrid;
+		AMyProject2BlockGrid* OwningGrid;
 
 	// --- NUEVAS VARIABLES Y FUNCIONES AÑADIDAS ---
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dado")
 		bool bIsJumping;
 
-	UPROPERTY()
-		FVector StartLocation;
-
-	UPROPERTY()
-		float JumpTimer;
+	// Estas dos no necesitan UPROPERTY porque son de uso interno de la animación
+	FVector StartLocation;
+	float JumpTimer;
 
 	UFUNCTION(BlueprintCallable, CallInEditor)
 		void ladoCara();
-	
 
 	UFUNCTION()
 		void BlockClicked(UPrimitiveComponent* ClickedComp, FKey ButtonClicked);
 
 	UFUNCTION(BlueprintCallable, Category = "Dado")
 		void ApplyVerticalImpulse();
-
 
 protected:
 	// Called when the game starts or when spawned
